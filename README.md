@@ -49,3 +49,6 @@ ptani --help
 - https://refactoring.guru/design-patterns/abstract-factory
 - https://stackoverflow.com/questions/7576525/optional-stdin-in-python-with-argparse
 - https://nuclei.projectdiscovery.io/templating-guide/operators/matchers/#negative-matchers
+- https://realpython.com/python-reduce-function/#reducing-iterables-with-pythons-reduce
+- https://gist.github.com/andersonbosa/feded0dcb0d6e12f39bd78bf29c79a64
+- https://stackoverflow.com/questions/28228345/how-to-search-through-dictionaries

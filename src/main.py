@@ -14,19 +14,22 @@ https://github.com@convisolabs/ptaas-nuclei-integration/blob/master/README.md
 """
 
 
-from src.lib import ArgumentParser
-from src.lib import NucleiIntegration
+from lib import ArgumentParser
+from lib import ConvisoNucleiIntegration
 
 
 def main():
-    if ArgumentParser.arguments_verification(__arguments__):
-        pass
-
-    parserController = NucleiIntegration.NucleiParser(
-        __arguments__.nuclei_json
+    # 1 read nuclei scan output
+    integrationInterface = ConvisoNucleiIntegration.IntegrationInterface(
+        __arguments__.nuclei_output
     )
 
-    appsecflow_reports = parserController.create_reports()
+    # 2 create reports
+    integrationInterface.conviso_reports = integrationInterface.get_conviso_reports()
+
+    # 3 deploy to flow
+    print(integrationInterface.conviso_reports)
+    # deploy_report_in_batch(conviso_reports)
 
 
 if __name__ == "__main__":
