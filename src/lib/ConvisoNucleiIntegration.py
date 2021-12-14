@@ -9,6 +9,7 @@
 
 import json
 from functools import reduce
+from lib import FlowNotificationBodyParser as body_parser
 
 """ Conviso PTaaS + Nuclei Scan Integration """
 
@@ -16,22 +17,19 @@ from functools import reduce
 class ReportInterface:
     def __init__(self, integration_interface):
         self.integration_interface = integration_interface
+        self.flow_body_parser = body_parser.FlowNotificationBodyParser()
         self.report_reference_by_matcher_name = {
             'content-security-policy': {
-                'template-id': 598,
-                'report': lambda nuclei_output: self.report_598(nuclei_output),
+                'report': lambda nuclei_output, project_id: self.report_598(nuclei_output, project_id),
             },
             'strict-transport-security': {
-                'template-id': 599,
-                'report': lambda nuclei_output: self.report_599(nuclei_output),
+                'report': lambda nuclei_output, project_id: self.report_599(nuclei_output, project_id),
             },
             'x-content-type-options': {
-                'template-id': 597,
-                'report': lambda nuclei_output: self.report_597(nuclei_output),
+                'report': lambda nuclei_output, project_id: self.report_597(nuclei_output, project_id),
             },
             'x-frame-options': {
-                'template-id': 596,
-                'report': lambda nuclei_output: self.report_596(nuclei_output),
+                'report': lambda nuclei_output, project_id: self.report_596(nuclei_output, project_id),
             },
         }
 
@@ -44,13 +42,13 @@ class ReportInterface:
         return self.report_reference_by_matcher_name[nuclei_output['matcher-name']]
 
     def generate_conviso_report(self, nuclei_output):
-        """ Creates a new JSON from Nuclei JSON, crossing with preconfigured templates to write each report. 
+        """ Creates a new JSON from Nuclei JSON, crossing with preconfigured templates to write each report.
         Takes the template reference for the current 'matcher-name'.
         Invokes its reference function to generate the its configured report.
         """
         report_template = self.get_report_template_by_matcher_name(
             nuclei_output)
-        return report_template['report'](nuclei_output)
+        return report_template['report'](nuclei_output, self.integration_interface.project_id)
 
     def parse_nuclei_output_by_matcher(self, conviso_reports, nuclei_output):
         if self.is_reportable(nuclei_output['matcher-name']):
@@ -59,26 +57,51 @@ class ReportInterface:
         return conviso_reports
 
     def generate_reports(self):
-        """ Itera over self.integration_interface.json_dict to generate Conviso reports. 
+        """ Itera over self.integration_interface.json_dict to generate Conviso reports.
         """
         return reduce(self.parse_nuclei_output_by_matcher, self.integration_interface.JSON_DICT, [])
 
-    def report_598(self, nuclei_output):
-        return 'return:report_598'
+    def report_598(self, nuclei_output, project_id):
+        return self.flow_body_parser.create_body(
+            nuclei_output,
+            598,
+            project_id,
+            "Não foi identificado o header content-security-policy"
+            # improve this description later !!
+        )
 
-    def report_599(self, nuclei_output):
-        return 'return:report_599'
+    def report_599(self, nuclei_output, project_id):
+        return self.flow_body_parser.create_body(
+            nuclei_output,
+            599,
+            project_id,
+            "Não foi identificado o header strict-transport-security"
+            # improve this description later !!
+        )
 
-    def report_597(self, nuclei_output):
-        return 'return:report_597'
+    def report_597(self, nuclei_output, project_id):
+        return self.flow_body_parser.create_body(
+            nuclei_output,
+            597,
+            project_id,
+            "Não foi identificado o header x-content-type-options"
+            # improve this description later !!
+        )
 
-    def report_596(self, nuclei_output):
-        return 'return:report_596'
+    def report_596(self, nuclei_output, project_id):
+        return self.flow_body_parser.create_body(
+            nuclei_output,
+            596,
+            project_id,
+            "Não foi identificado o header x-frame-options"
+            # improve this description later !!
+        )
 
 
 class IntegrationInterface:
-    def __init__(self, arg_nuclei_json_file):
+    def __init__(self, arg_nuclei_json_file, project_id):
         self.JSON_DICT = self.get_nuclei_json_sanitized(arg_nuclei_json_file)
+        self.project_id = project_id
         self.report_interface = ReportInterface(self)
 
     def get_nuclei_json_sanitized(self, file):
