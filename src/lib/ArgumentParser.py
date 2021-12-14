@@ -34,6 +34,12 @@ def get_arguments():
         required=True,
     )
     parser.add_argument(
+        '-apk', '--api-key',
+        help="Api Key in APPSecFlow.",
+        type=str,
+        required=True,
+    )
+    parser.add_argument(
         '-no', '--nuclei-output',
         help="Nuclei test result file path.",
         type=argparse.FileType('r'),
