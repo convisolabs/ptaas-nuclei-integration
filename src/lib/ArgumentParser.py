@@ -10,28 +10,17 @@
 import argparse
 import sys
 
-__version__ = "0.1.0"
+__version__ = "1.0.0"
 
 
 def get_arguments():
-    """Parse the command line arguments."""
-
+    """Interface to parsing command line strings into Python objects.
+    """ 
     parser = argparse.ArgumentParser(
+        prog="ptani",
         description='ptaas-nuclei-integration@v{} - MIT © Conviso 2021' .format(
             __version__),
         prefix_chars='-',
-    )
-    parser.add_argument(
-        '-pid', '--project-id',
-        help="Project ID in APPSecFlow.",
-        type=str,
-        required=True,
-    )
-    parser.add_argument(
-        '-sid', '--scope-id',
-        help="Scope ID in APPSecFlow.",
-        type=str,
-        required=True,
     )
     parser.add_argument(
         '-apk', '--api-key',
@@ -39,6 +28,13 @@ def get_arguments():
         type=str,
         required=True,
     )
+    parser.add_argument(
+        '-pid', '--project-id',
+        help="Project ID in APPSecFlow.",
+        type=str,
+        required=True,
+    )
+    
     parser.add_argument(
         '-no', '--nuclei-output',
         help="Nuclei test result file path.",
