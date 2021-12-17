@@ -3,35 +3,39 @@
 #
 # MIT License
 #
-# Copyright (c) 2021 Conviso AppSec Labs
+# Copyright (c) 2021 Conviso AppSec Labs < https://github.com@convisolabs >
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
 """
-Automated identification and issuance of vulnerability reports to Conviso Platform using nuclei as scanner.
+Automated identification and issuance of vulnerability reports to Conviso Platform using nuclei as scanner engine.
 
 https://github.com@convisolabs/ptaas-nuclei-integration/blob/master/README.md
 """
 
 
-from lib import ArgumentParser
-from lib import ConvisoNucleiIntegration
+from lib import ArgumentParser, FlowNucleiIntegration, GraphQLService
 
 
 def main():
-    # 1 read nuclei scan output
-    integrationInterface = ConvisoNucleiIntegration.IntegrationInterface(
-        __arguments__.nuclei_output
+    __arguments__ = ArgumentParser.get_arguments()
+
+    _integrationInterface = FlowNucleiIntegration.IntegrationInterface(
+        __arguments__.nuclei_output,
+        __arguments__.project_id
     )
 
-    # 2 create reports
-    integrationInterface.conviso_reports = integrationInterface.get_conviso_reports()
+    conviso_reports = _integrationInterface.get_conviso_reports()
+    print('[INF] Generated {} reports from Nuclei test output'.format(
+        len(conviso_reports))
+    )
 
-    # 3 deploy to flow
-    print(integrationInterface.conviso_reports)
-    # deploy_report_in_batch(conviso_reports)
+    gqlService = GraphQLService.Interface(__arguments__.api_key)
+    gqlService.create_flow_notifications(conviso_reports)
+
+    print('[INF] Done! Review your reports in https://app.conviso.com.br')
+    pass
 
 
 if __name__ == "__main__":
-    __arguments__ = ArgumentParser.get_arguments()
     main()
