@@ -1,6 +1,6 @@
 <p align="center">
   <img src="https://raw.githubusercontent.com/convisoappsec/Burp-AppSecFlow/master/assets/readme/logo-conviso.png">
-  <p align="center">ptaas-nuclei-integration - PTaaS Nuclei Integration</p>
+  <p align="center">PTaNI - PTaaS Nuclei Integration</p>
   <p align="center">
     <a href="/LICENSE.md">
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
