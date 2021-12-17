@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/convisoappsec/ptaas-nuclei-integration/master/assets/readme/logo-conviso.png">
+  <img src="https://raw.githubusercontent.com/convisoappsec/Burp-AppSecFlow/master/assets/readme/logo-conviso.png">
   <p align="center">ptaas-nuclei-integration - PTaaS Nuclei Integration</p>
   <p align="center">
     <a href="/LICENSE.md">
