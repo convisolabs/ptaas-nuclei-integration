@@ -50,7 +50,7 @@ pip3 install -r requirements.txt
 
 - Note that this tool is an extension to integrate [Nuclei][nucleipage] and [Conviso AppSec Flow][flowpage]. So it only works with Nuclei output.
 
-### Optionally, you can use aile
+### Optionally, you can use `.env`
 
 <div align=center>
   <img src="./env_file.png">
