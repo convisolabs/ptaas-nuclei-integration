@@ -17,8 +17,6 @@
 
 [AppSec Flow](https://blog.convisoappsec.com/en/appsec-flow-a-complete-devsecops-platform/) is a Software as a Service (SaaS) platform created by [Conviso](https://www.convisoappsec.com/) that supports the entire security cycle in the software development life cycle. It was created based on the Software Assurance Maturity Model (SAMM) - a project in the portfolio of the Open Web Application Security Project (OWASP) that defines a series of practices with the objective of improving software security. This tool [ptaas-nuclei-integration](https://github.com/convisolabs/ptaas-nuclei-integration) was been developed to serve as an extension to [AppSec Flow CLI](https://docs.convisoappsec.com/cli/installation). It aims to automate vulnerability issuance in [AppSec Flow](https://blog.convisoappsec.com/en/appsec-flow-a-complete-devsecops-platform/) using the [Nuclei](nuclei.projectdiscovery.io/) as a scanner engine.
 
-> Automated identification and issuance of vulnerability reports to Conviso Platform using nuclei as scanner engine.
-
 ---
 
 ### Documentation
