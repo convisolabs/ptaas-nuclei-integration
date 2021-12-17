@@ -23,7 +23,7 @@
 
 ### Documentation
 
-You can find the documentation at: [docs.](https://github.com/convisoappsec/ptaas-nuclei-integration/wiki)
+You can find the documentation at [docs](https://github.com/convisolabs/ptaas-nuclei-integration/blob/main/docs/index.md).
 
 ---
 
@@ -36,6 +36,4 @@ You can find the documentation at: [docs.](https://github.com/convisoappsec/ptaa
 ### License
 
 - This work is licensed under [MIT License.](/LICENSE.md)
-
----
 
