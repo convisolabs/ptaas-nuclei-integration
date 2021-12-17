@@ -23,7 +23,7 @@
 
 ### Documentation
 
-You can find the full documentation at: [wiki page.](https://github.com/convisoappsec/ptani/wiki)
+You can find the documentation at: [docs.](https://github.com/convisoappsec/ptani/wiki)
 
 ---
 
@@ -39,24 +39,3 @@ You can find the full documentation at: [wiki page.](https://github.com/convisoa
 
 ---
 
-### References
-
-> Left here for anyone who wants to know how the development process went. Reference links were added in chronological order, as doubts arose.
-
-- https://nuclei.projectdiscovery.io/template-examples/http/#matchers-with-conditions
-- https://pypi.org/project/pyCLI/
-- https://pypi.org/project/click/
-- https://pypi.org/project/PyInquirer/
-- https://docs.python.org/3/library/argparse.html
-- https://docs.python.org/3/library/venv.html
-- https://pypi.org/project/python-graphql-client/
-- https://gql.readthedocs.io/en/latest/intro.html
-- https://github.com/convisolabs/ptani/blob/master/src/main/java/models/graphql/query/GraphQLQueries.java
-- https://stackoverflow.com/questions/39303181/wait-for-user-input-when-not-sys-stdin-isatty#61962566
-- https://www.w3schools.com/python/ref_func_map.asp
-- https://refactoring.guru/design-patterns/abstract-factory
-- https://stackoverflow.com/questions/7576525/optional-stdin-in-python-with-argparse
-- https://nuclei.projectdiscovery.io/templating-guide/operators/matchers/#negative-matchers
-- https://realpython.com/python-reduce-function/#reducing-iterables-with-pythons-reduce
-- https://gist.github.com/andersonbosa/feded0dcb0d6e12f39bd78bf29c79a64
-- https://stackoverflow.com/questions/28228345/how-to-search-through-dictionaries
