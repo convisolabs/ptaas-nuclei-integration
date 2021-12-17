@@ -63,12 +63,12 @@ pip3 install -r requirements.txt
 - A more convenient way to run this program can be done as follows. Add to your `.bashrc` the following lines:
 
 ```bash
-export _CONVISO_FLOW_APIKEY="<your api key>"
-alias ptani="python3 $_ptani_script_path -apk $CONVISO_FLOW_APIKEY"
+export _CONVISO_FLOW_APIKEY="<your_api_key>"
+alias ptani="python3 $_ptani_script_path -apk $_CONVISO_FLOW_APIKEY"
 function flow_ptani() {
   local _project_pid="$1"
   local _target_url="$2"
-  local _ptani_script_path="<script_path>/ptaas-nuclei-integration/src/main.py"
+  local _ptani_script_path="_your_path_here_/ptaas-nuclei-integration/src/main.py"
 
   if [[ -z $_project_pid ]] || [[ -z $_target_url ]]; then
     ptani --help
@@ -80,6 +80,8 @@ function flow_ptani() {
     -u "$_target_url" | ptani -pid $_project_pid
 }
 ```
+
+- Don't forget to change the values to `_CONVISO_FLOW_APIKEY` and `_ptani_script_path`
 
 ### Other links:
 
