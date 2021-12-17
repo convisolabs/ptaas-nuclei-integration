@@ -14,23 +14,26 @@ https://github.com@convisolabs/ptaas-nuclei-integration/blob/master/README.md
 """
 
 
-from dotenv import dotenv_values
-from lib import ArgumentParser, ConvisoNucleiIntegration, Deployer
+from lib import ArgumentParser, FlowNucleiIntegration, GraphQLService
 
 
 def main():
     __arguments__ = ArgumentParser.get_arguments()
-    
-    _integrationInterface = ConvisoNucleiIntegration.IntegrationInterface(
+
+    _integrationInterface = FlowNucleiIntegration.IntegrationInterface(
         __arguments__.nuclei_output,
         __arguments__.project_id
     )
 
     conviso_reports = _integrationInterface.get_conviso_reports()
-    print('[INFO] Found {} reports to deploy. '.format(len(conviso_reports)))
-    deployer = Deployer.ReportDeployer(__arguments__.api_key)
-    # deployer.create_flow_notifications(conviso_reports)
-    
+    print('[INF] Generated {} reports from Nuclei test output'.format(
+        len(conviso_reports))
+    )
+
+    gqlService = GraphQLService.Interface(__arguments__.api_key)
+    gqlService.create_flow_notifications(conviso_reports)
+
+    print('[INF] Done! Review your reports in https://app.conviso.com.br')
     pass
 
 

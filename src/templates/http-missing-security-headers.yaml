@@ -22,7 +22,6 @@ requests:
           - "(?i)strict-transport-security"
         negative: true
         part: header
-        description: 009a9743-6765-55dc-8def-767c0c1f2e65
 
       - type: regex
         name: content-security-policy

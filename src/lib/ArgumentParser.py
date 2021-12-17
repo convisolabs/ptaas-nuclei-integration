@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-# 
+#
 # MIT License
-# 
+#
 # Copyright (c) 2021 Conviso AppSec Labs
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
@@ -10,12 +10,16 @@
 import argparse
 import sys
 
+from dotenv import dotenv_values
+
 __version__ = "1.0.0"
 
 
 def get_arguments():
     """Interface to parsing command line strings into Python objects.
-    """ 
+    """
+    __env__ = dotenv_values('.env')
+
     parser = argparse.ArgumentParser(
         prog="ptani",
         description='ptaas-nuclei-integration@v{} - MIT © Conviso 2021' .format(
@@ -26,7 +30,8 @@ def get_arguments():
         '-apk', '--api-key',
         help="Api Key in APPSecFlow.",
         type=str,
-        required=True,
+        required=False,
+        default=['APPSECFLOW_APIKEY']
     )
     parser.add_argument(
         '-pid', '--project-id',
@@ -34,7 +39,7 @@ def get_arguments():
         type=str,
         required=True,
     )
-    
+
     parser.add_argument(
         '-no', '--nuclei-output',
         help="Nuclei test result file path.",
@@ -42,4 +47,3 @@ def get_arguments():
         default=(None if sys.stdin.isatty() else sys.stdin)
     )
     return parser.parse_args()
-
