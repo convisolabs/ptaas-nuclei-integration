@@ -64,11 +64,11 @@ pip3 install -r requirements.txt
 
 ```bash
 export _CONVISO_FLOW_APIKEY="<your_api_key>"
-alias ptani="python3 $_ptani_script_path -apk $_CONVISO_FLOW_APIKEY"
 function flow_ptani() {
   local _project_pid="$1"
   local _target_url="$2"
   local _ptani_script_path="_your_path_here_/ptaas-nuclei-integration/src/main.py"
+  alias ptani="python3 $_ptani_script_path -apk $_CONVISO_FLOW_APIKEY"
 
   if [[ -z $_project_pid ]] || [[ -z $_target_url ]]; then
     ptani --help
