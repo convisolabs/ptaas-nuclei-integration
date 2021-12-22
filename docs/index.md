@@ -13,7 +13,7 @@ layout: hacker
 $ flow_ptani
 usage: ptani [-h] -apk API_KEY -pid PROJECT_ID [-no NUCLEI_OUTPUT]
 
-ptaas-nuclei-integration@v1.0.0 - MIT © Conviso 2021
+ptaas-nuclei-integration@v1.0.1 - MIT © Conviso 2021
 
 optional arguments:
   -h, --help            show this help message and exit

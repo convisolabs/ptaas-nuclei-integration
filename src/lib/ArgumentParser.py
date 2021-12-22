@@ -12,13 +12,14 @@ import sys
 
 from dotenv import dotenv_values
 
-__version__ = "1.0.0"
+__version__ = "1.0.1"
 
 
 def get_arguments():
     """Interface to parsing command line strings into Python objects.
     """
-    __env__ = dotenv_values('.env')
+
+    __env__ = dotenv_values()
 
     parser = argparse.ArgumentParser(
         prog="ptani",
@@ -39,7 +40,6 @@ def get_arguments():
         type=str,
         required=True,
     )
-
     parser.add_argument(
         '-no', '--nuclei-output',
         help="Nuclei test result file path.",

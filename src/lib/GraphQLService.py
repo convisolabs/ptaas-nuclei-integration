@@ -14,7 +14,7 @@ from gql.transport.aiohttp import AIOHTTPTransport
 
 from lib.utils import progressBar as animation
 
-__env__ = dotenv_values('.env')
+__env__ = dotenv_values()
 
 
 class Interface:
