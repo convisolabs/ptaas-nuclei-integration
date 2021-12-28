@@ -35,9 +35,7 @@ class ReportInterface:
         }
 
     def __report_598(self, nuclei_item):
-        description = """A aplicação "{host}" não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""".format(
-            host=nuclei_item['host']
-        )
+        description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
         return self.flow_parser_inheritance.create_mutation_body(
             nuclei_item,
             598,
@@ -45,9 +43,7 @@ class ReportInterface:
         )
 
     def __report_599(self, nuclei_item):
-        description = """A aplicação "{host}" não possui o cabeçalho de resposta "strict-transport-security" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""".format(
-            host=nuclei_item['host']
-        )
+        description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "strict-transport-security" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
         return self.flow_parser_inheritance.create_mutation_body(
             nuclei_item,
             599,
@@ -55,9 +51,7 @@ class ReportInterface:
         )
 
     def __report_597(self, nuclei_item):
-        description = """A aplicação "{host}" não possui o cabeçalho de resposta "x-content-type-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""".format(
-            host=nuclei_item['host']
-        )
+        description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "x-content-type-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
         return self.flow_parser_inheritance.create_mutation_body(
             nuclei_item,
             597,
@@ -65,9 +59,7 @@ class ReportInterface:
         )
 
     def __report_596(self, nuclei_item):
-        description = """A aplicação "{host}" não possui o cabeçalho de resposta "x-frame-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""".format(
-            host=nuclei_item['host']
-        )
+        description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "x-frame-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
         return self.flow_parser_inheritance.create_mutation_body(
             nuclei_item,
             596,
