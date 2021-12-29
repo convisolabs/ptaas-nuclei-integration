@@ -29,7 +29,14 @@ requests:
           - "(?i)content-security-policy"
         negative: true
         part: header
-
+      
+      - type: regex
+        name: permission-policy
+        regex:
+          - "(?i)permission-policy"
+        negative: true
+        part: header
+      
       - type: regex
         name: x-frame-options
         regex:
@@ -125,3 +132,5 @@ requests:
         name: access-control-allow-headers
         regex:
           - "(?i)access-control-allow-headers"
+	negative: true
+	part: header
