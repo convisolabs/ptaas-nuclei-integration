@@ -20,9 +20,6 @@ class ReportInterface:
         self.flow_parser_inheritance = FlowNotificationParser.ParserInterface(
             self.integration_interface_inheritance.project_id)
         self.report_reference_by_matcher_name = {
-            'permission-policy': {
-                'generator': lambda nuclei_output: self.__report_1048(nuclei_output),
-            },
             'content-security-policy': {
                 'generator': lambda nuclei_output: self.__report_598(nuclei_output),
             },
@@ -37,14 +34,6 @@ class ReportInterface:
             },
         }
 
-    def __report_1048(self, nuclei_item):
-        description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "permissions policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        return self.flow_parser_inheritance.create_mutation_body(
-            nuclei_item,
-            1048,
-            description
-        )
-    
     def __report_598(self, nuclei_item):
         description = f"""A aplicação <a href="{nuclei_item['host']}">{nuclei_item['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
         return self.flow_parser_inheritance.create_mutation_body(
