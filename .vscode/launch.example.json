@@ -7,9 +7,9 @@
       "program": "${workspaceRoot}/src/main.py",
       "console": "integratedTerminal",
       "args": [
-        "-apk", "<replace_here>",
-        "-pid", "<replace_here>",
-        "-no", "/tmp/output.json",
+        "-apk", "yNp3jPuw93FMKz-_-V2MT_W8ezupItZVODh4asAQoz4",
+        "-pid", "10063",
+        "-no", "venv/output4.json",
         "-L", "DEBUG"
       ]
     },
@@ -20,9 +20,9 @@
       "program": "${workspaceRoot}/src/main.py",
       "console": "integratedTerminal",
       "args": [
-        "-apk", "<replace_here>",
-        "-pid", "<replace_here>",
-        "-no", "/tmp/output.json",
+        "-apk", "lal8b96kHdO-WI5mNYRBJybxmiEHKq5ZytveZHCRUxo",
+        "-pid", "2747",
+        "-no", "venv/output4.json",
         "-L", "DEBUG",
         "-hml",
       ]
