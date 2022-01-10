@@ -3,7 +3,7 @@
 #
 # MIT License
 #
-# Copyright (c) 2021 Conviso AppSec Labs
+# Copyright (c) 2021 Conviso AppSec Labs < https://github.com@convisolabs >
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
@@ -19,14 +19,14 @@ UTF8 = 'utf-8'
 
 class ParserInterface:
     def __init__(self, project_id):
-        self.project_id = project_id
+        self.__project_id = project_id
         self.evidence_service = EvidenceService()
 
     def create_mutation_body(self, nuclei_item, template_id, description):
         return {
             "vulnerabilityTemplateId": template_id,
             "description": description,
-            "project_id": self.project_id,
+            "project_id": self.__project_id,
             "evidenceArchives":  self.evidence_service.mount_binary_file(nuclei_item)
         }
 
@@ -43,19 +43,21 @@ class EvidenceService:
             rmtree(self.base_dir)
         os.makedirs(self.base_dir, exist_ok=True)
 
-    def mount_binary_file(self, nuclei_output):
+    def mount_binary_file(self, nuclei_output, lines):
         token = self.__generate_token_stamp()
         tmp_filepath = "{}/evidence-{}.txt".format(self.base_dir, token)
 
         f = open(tmp_filepath, "w")
-        f.writelines([
+        if not lines:
+            lines=[
             "#\n# REQUEST DONE\n#\n",
             nuclei_output['request'],
             " \n\n",
             "#\n# RESPONSE RECEIVED \n#\n",
             nuclei_output['response'],
             " \n\n",
-        ])
+            ]
+        f.writelines(lines)
         f.close()
         return open(tmp_filepath, 'rb')
 

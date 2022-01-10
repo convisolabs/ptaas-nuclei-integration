@@ -3,15 +3,15 @@
 #
 # MIT License
 #
-# Copyright (c) 2021 Conviso AppSec Labs
+# Copyright (c) 2021 Conviso AppSec Labs < https://github.com@convisolabs >
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
-import sys
-import time
+from sys import stdout
+from time import sleep
 
-CURSOR_UP_ONE = '\x1b[1A'
-ERASE_LINE = '\x1b[2K'
+CURSOR_UP_ONE = "\x1b[1A"
+ERASE_LINE = "\x1b[2K"
 
 
 def progressBar(prev, curr):
@@ -24,9 +24,9 @@ def progressBar(prev, curr):
             pB = pB + bar
 
     for i in range(prev, curr + 1):
-        time.sleep(0.02)
+        sleep(0.02)
         if i != curr:
-            sys.stdout.write(CURSOR_UP_ONE)
-            sys.stdout.write(ERASE_LINE)
-            print("|{1}|{0}%".format(i+1, pB))
+            stdout.write(CURSOR_UP_ONE)
+            stdout.write(ERASE_LINE)
+            print("|{1}|{0}%".format(i + 1, pB))
         pB = pB + bar
