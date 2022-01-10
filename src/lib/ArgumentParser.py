@@ -13,7 +13,7 @@ from textwrap import dedent
 
 from dotenv import dotenv_values
 
-__version__ = "1.0.0"
+__version__ = "βeta"
 __ENV__ = dotenv_values()
 
 
