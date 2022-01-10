@@ -1,11 +1,31 @@
 {
   "configurations": [
     {
-      "name": "Python: Current File",
+      "name": "[PTaNI] Debugger",
       "type": "python",
       "request": "launch",
-      "program": "python",
-      "console": "integratedTerminal"
+      "program": "${workspaceRoot}/src/main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "-apk", "<replace_here>",
+        "-pid", "<replace_here>",
+        "-no", "/tmp/output.json",
+        "-L", "DEBUG"
+      ]
+    },
+    {
+      "name": "[PTaNI] HML Debugger",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "-apk", "<replace_here>",
+        "-pid", "<replace_here>",
+        "-no", "/tmp/output.json",
+        "-L", "DEBUG",
+        "-hml",
+      ]
     }
   ]
 }
