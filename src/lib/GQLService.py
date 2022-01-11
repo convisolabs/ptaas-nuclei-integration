@@ -9,9 +9,12 @@
 
 
 from shutil import Error
+
 from dotenv import dotenv_values
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
+
+from main import logging
 
 __ENV__ = dotenv_values()
 
@@ -45,9 +48,10 @@ class GQLInterface:
             for project in projects:
                 is_current_project = self.project_id == project.get("id")
                 if is_current_project:
-                    print("[DBG] Connection established!")
                     base_url = self.__gql_client.transport.url.replace("/graphql", "")
-                    return f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}"""
+                    url = f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}"""
+                    logging.debug(f"[DBG] Connection established with project: {url}")
+                    return url
             else:
                 raise Error(f"[ERR] Project '{self.project_id}' not found.")
 
@@ -83,7 +87,7 @@ class GQLInterface:
             gql_respoinse (dict): Response from Conviso GraphQL API
         """
         try:
-            print(
+            logging.debug(
                 f"""[DBG] Deploying report: {report.gql_reference} - {report.vulnerabilityTemplateId} - {report.nucleiReference["host"]} - {report.nucleiReference["matcher-name"]}"""
             )
             gql_query = self.__get_gql_query_from_reference(report.gql_reference)

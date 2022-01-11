@@ -7,11 +7,14 @@
 # The above copyright notice and this permission notice shall be included in all
 # copies or substantial portions of the Software.
 
+
 import base64
 import os
 from codecs import encode
 from datetime import datetime
 from shutil import rmtree
+
+from main import logging
 
 UTF8 = "utf-8"
 
@@ -258,7 +261,9 @@ class ReportInterface:
             reference = self.__get_reference_report(nuclei_item)
             if bool(reference):
                 report = reference["generator"](nuclei_item)
-                # print( f"""[DBG] Generated report: {report.gql_reference} - {report.vulnerabilityTemplateId} - {report.nucleiReference["host"]} - {report.nucleiReference["matcher-name"]}""" )
+                logging.debug(
+                    f"""[DBG] Generated report: {report.gql_reference} - {report.vulnerabilityTemplateId} - {report.nucleiReference["host"]} - {report.nucleiReference["matcher-name"]}"""
+                )
                 parsed_reports.append(report)
         return parsed_reports
 

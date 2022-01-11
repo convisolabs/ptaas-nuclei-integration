@@ -45,7 +45,7 @@ def get_arguments():
         help="Make it verbose, useful for debugging.",
         type=str,
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
-        default="INFO",
+        default="DEBUG",
     )
     parser.add_argument(
         "-apk",

@@ -13,6 +13,7 @@ Automated identification and issuance of vulnerability reports to Conviso Platfo
 https://github.com@convisolabs/ptaas-nuclei-integration/blob/master/README.md
 """
 
+import logging
 
 from lib import ArgumentParser, ConvisoNucleiIntegration
 
