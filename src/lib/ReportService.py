@@ -9,12 +9,11 @@
 
 
 import base64
+import logging
 import os
 from codecs import encode
 from datetime import datetime
 from shutil import rmtree
-
-from main import logging
 
 UTF8 = "utf-8"
 

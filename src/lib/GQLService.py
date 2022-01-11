@@ -14,7 +14,7 @@ from dotenv import dotenv_values
 from gql import Client, gql
 from gql.transport.aiohttp import AIOHTTPTransport
 
-from main import logging
+import logging
 
 __ENV__ = dotenv_values()
 
