@@ -9,7 +9,6 @@
 
 
 import logging
-from shutil import Error
 
 from dotenv import dotenv_values
 from gql import Client, gql
