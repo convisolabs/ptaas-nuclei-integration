@@ -65,7 +65,7 @@ Observation: Nuclei parameters "-json" and "-irr" are required for script operat
 
 ### Demo
 
-+ [ ] todo
+![1-get ptani](https://user-images.githubusercontent.com/8931900/150802951-b43eb14e-b161-4869-87be-2e9e2cee34b0.gif)
 
 ---
 
