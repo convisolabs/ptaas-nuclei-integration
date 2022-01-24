@@ -1,0 +1,19 @@
+{
+  "configurations": [
+    {
+      "name": "[PTaNI] Debugger",
+      "type": "python",
+      "request": "launch",
+      "program": "${workspaceRoot}/src/main.py",
+      "console": "integratedTerminal",
+      "args": [
+        "-apk",
+        "yNp3jPuw93FMKz-_-V2MT_W8ezupItZVODh4asAQoz4",
+        "-pid",
+        "10006",
+        "-no",
+        "/tmp/nuclei-output.json"
+      ]
+    }
+  ]
+}
