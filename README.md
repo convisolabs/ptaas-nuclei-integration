@@ -2,7 +2,7 @@
   <img src="https://raw.githubusercontent.com/convisoappsec/Burp-AppSecFlow/master/assets/readme/logo-conviso.png">
   <p align="center">PTaNI - PTaaS Nuclei Integration</p>
   <p align="center">
-    <a href="/LICENSE.md">
+    <a href="/LICENSE">
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
     <a href="https://github.com/convisolabs/ptaas-nuclei-integration/releases">
@@ -78,4 +78,4 @@ Observation: Nuclei parameters "-json" and "-irr" are required for script operat
 
 ## License
 
-- This work is licensed under [MIT License.](/LICENSE.md)
+- This work is licensed under [MIT License.](/LICENSE)
