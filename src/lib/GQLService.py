@@ -47,19 +47,21 @@ class GQLInterface:
             for project in projects:
                 found_current_project = self.project_id == project.get("id")
                 if found_current_project:
-                    base_url = self.gql_client.transport.url.replace("/graphql", "")
+                    base_url = self.gql_client.transport.url.replace(
+                        "/graphql", "")
                     url = f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}"""
-                    logging.debug(f"[DBG] Connection established with project: {url}")
+                    logging.debug(
+                        f"[DBG] Connection established with project: {url}")
                     return url
             else:
                 msg = f"[ERR] Project '{self.project_id}' not found."
                 logging.error(msg)
-                raise Error(msg)
+                raise msg
 
         except BaseException as err:
             msg = f"[ERR] Something wrong in #get_project_url: {err}"
             logging.error(msg)
-            raise Error(msg)
+            raise msg
 
     def __get_graphql_endpoint(self):
         if self.environment == "homologation":
