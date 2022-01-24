@@ -52,7 +52,6 @@ def get_arguments():
         "--api-key",
         help="Your apikey generated in Conviso Platform.",
         type=str,
-        # todo: preferir o argumento -apk, fallback na .env
         default=__get_default_from_env(),
         required=True,
     )
@@ -76,7 +75,15 @@ def get_arguments():
         "--homologation",
         help="Use API in homologation enviroment. Useful for testing in development.",
         action="store_const",
-        const="homologation",
         dest="api_environment",
+        const="homologation",
+    )
+    parser.add_argument(
+        "-eng",
+        "--english",
+        help="Diz para a ferramenta que deve emitir relatórios em inglês.",
+        action="store_const",
+        dest="is_english",
+        const=True,
     )
     return parser.parse_args()

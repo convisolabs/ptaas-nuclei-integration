@@ -13,13 +13,26 @@ import logging
 import os
 from codecs import encode
 from datetime import datetime
+from random import randint
 from shutil import rmtree
 
 UTF8 = "utf-8"
 
 
+def base64encode(string=""):
+    return base64.b64encode(str(string).encode(UTF8)).decode(UTF8)
+
+
+def base64decode(string=""):
+    return base64.b64decode(str(string).encode(UTF8)).decode(UTF8)
+
+
+def get_random_string():
+    return base64encode(randint(0, 9)).rstrip("=")
+
+
 class NotificationReport:
-    """Handler to manipulate Conviso Notification Report.
+    """Handler to manipulate Conviso Notification Report.  Further information: https://docs.convisoappsec.com/api/graphql/documentation/mutations/create-notification
 
     Properties:
         projectId (int): Conviso Project ID.
@@ -27,7 +40,7 @@ class NotificationReport:
         description (str): Report description.
         evidenceArchives (list<_io.TextIOWrapper>): List with binary evidences.
         nucleiReference (dict): Nuclei test reference.
-        gql_reference (string): Reference identifier for which to see in GQL.
+        gqlReference (string): Its a constant. Reference identifier for which to see in GQL.
     """
 
     def __init__(
@@ -38,144 +51,259 @@ class NotificationReport:
         evidenceArchives,
         nucleiReference,
     ):
+        self.gqlReference = "createNotification"
+        self.clientMutationId = "ptani-78f6a7b4-154e-5e5a-b7cc-079ce31acd86"
         self.projectId = int(projectId)
         self.vulnerabilityTemplateId = int(vulnerabilityTemplateId)
         self.description = description
         self.evidenceArchives = evidenceArchives  # todo: create binary evidence
         self.nucleiReference = nucleiReference
-        self.gql_reference = "notification"
 
 
-class VulnerabilityReport:
-    """Handler to manipulate Conviso Vulnerability Report.
+class WebVulnerabilityReport:
+    """Handler to manipulate Conviso Vulnerability Report. Further information: https://docs.convisoappsec.com/api/graphql/documentation/inputs/create-web-vulnerability-input/
 
     Properties:
-        projectId (int): Conviso Project ID.
-        vulnerabilityTemplateId (int): Conviso Template ID
-        description (str): Report description.
-        evidenceArchives (list<_io.TextIOWrapper>): List with binary evidences.
-        nucleiReference (dict): Nuclei test reference.
-        gql_reference (string): Reference identifier for which to see in GQL.
+        clientMutationId ("ptani-78f6a7b4-154e-5e5a-b7cc-079ce31acd86"): Used to identify the requests done from this tool to Conviso GQL API.
+        projectId (int):                          Conviso Project ID.
+        vulnerabilityTemplateId (int):            Conviso Template ID
+        evidenceArchives ([_io.TextIOWrapper]):   List with binary evidences.
+        probability (["high", "medium", "low"]):  Vulnerability probability.
+        impact (["high", "medium", "low"]):       Impact of the vulnerability.
+        impactResume (str):                       Description of the impact.
+        description (str):                        Description of the vulnerability.
+        webMethod (["GET", "POST", "DELETE", "PUT", "PATCH", "HEAD", "CONNECT", "OPTIONS", "TRACE"]):
+        webParameters (str):                      Parameters used in the web request.
+        webProtocol (str):                        Protocol used in the web request.
+        webRequest (str):                         Reported request
+        webResponse (str):                        Reported response
+        webSteps (str):                           Steps to reproduce the vulnerability.
+        webUrl (str):                             The vulnerable target.
+        invaded (bool[default=False]):            True if the environment was compromised.
+        invadedEnvironmentDescription (str):      Required if invaded is True.
+
+    Returns:
+        WebVulnerabilityReport:
     """
 
     def __init__(
         self,
         projectId,
         vulnerabilityTemplateId,
+        probability,
+        impact,
+        impactResume,
         description,
         evidenceArchives,
+        webMethod,
+        webParameters,
+        webProtocol,
+        webRequest,
+        webResponse,
+        webSteps,
+        webUrl,
         nucleiReference,
+        invaded=False,
+        invadedEnvironmentDescription="",
     ):
+        self.gqlReference = "createWebVulnerability"
+        self.clientMutationId = "ptani-78f6a7b4-154e-5e5a-b7cc-079ce31acd86"
         self.projectId = int(projectId)
         self.vulnerabilityTemplateId = int(vulnerabilityTemplateId)
+        self.probability = probability
+        self.impact = impact
+        self.impactResume = impactResume
         self.description = description
-        self.evidenceArchives = evidenceArchives  # todo: create binary evidence
+        self.evidenceArchives = evidenceArchives
+        self.webMethod = webMethod
+        self.webParameters = webParameters
+        self.webProtocol = webProtocol
+        self.webRequest = webRequest
+        self.webResponse = webResponse
+        self.webSteps = webSteps
+        self.webUrl = webUrl
         self.nucleiReference = nucleiReference
-        self.gql_reference = "vulnerability"
+        self.invaded = invaded
+        self.invadedEnvironmentDescription = invadedEnvironmentDescription
 
 
 class ReportInterface:
     """Handler to parsing and creating Conviso Platform reports."""
 
-    def __init__(self, project_id):
+    def __init__(self, project_id, is_english):
         self.__evidences_tmp_dir = "./tmp"
         self.project_id = project_id
+        self.is_english = is_english
         self.reports = []
         self.reference_reports = [
             {
-                "matcher-name": "test-8ff55be1-4ed4-5df2-9aa4-970d78b0437e",
-                "generator": lambda nuclei_reference: self.__report_test(
-                    nuclei_reference
-                ),
-            },
-            {
                 "matcher-name": "x-content-type-options",
-                "generator": lambda nuclei_reference: self.__report_597(
-                    nuclei_reference
-                ),
+                "parser": lambda nuclei_reference: self.report_597(nuclei_reference),
             },
             {
                 "matcher-name": "x-frame-options",
-                "generator": lambda nuclei_reference: self.__report_596(
-                    nuclei_reference
-                ),
+                "parser": lambda nuclei_reference: self.report_596(nuclei_reference),
             },
             {
                 "matcher-name": "content-security-policy",
-                "generator": lambda nuclei_reference: self.__report_598(
-                    nuclei_reference
-                ),
+                "parser": lambda nuclei_reference: self.report_598(nuclei_reference),
             },
             {
                 "matcher-name": "strict-transport-security",
-                "generator": lambda nuclei_reference: self.__report_599(
-                    nuclei_reference
-                ),
+                "parser": lambda nuclei_reference: self.report_599(nuclei_reference),
             },
             {
                 "matcher-name": "permission-policy",
-                "generator": lambda nuclei_reference: self.__report_1048(
-                    nuclei_reference
-                ),
+                "parser": lambda nuclei_reference: self.report_1048(nuclei_reference),
             },
         ]
         self.__setup_tmp_directory()
 
-    def __report_test(self, nuclei_reference):
-        impact = f"""impact test in {nuclei_reference['host']} """
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(
-            [
-                self.__mount_default_evidence(nuclei_reference),
-                f"""Et in do consequat \n\r\t # in excepteur aute labore est culpa sint laborum: 
-                \n\r{nuclei_reference['host']} - {description}""",
-                f""" {impact}""",
-                f""" test-8ff55be1-4ed4-5df2-9aa4-970d78b0437e """,
-            ]
-        )
-        return VulnerabilityReport(
-            self.project_id, 257, description, evidenceArchives, nuclei_reference
-        )
-
-    def __report_1048(self, nuclei_reference):
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "permissions policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(nuclei_reference)
-        return NotificationReport(
-            self.project_id, 1048, description, evidenceArchives, nuclei_reference
+    def report_web(self, nuclei_reference):
+        return WebVulnerabilityReport(
+            projectId=self.project_id,
+            vulnerabilityTemplateId=662,
+            probability="low",
+            impact="low",
+            impactResume=f"""impact test in {nuclei_reference['host']} """,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [self.__mount_default_evidence(nuclei_reference)]
+            ),
+            nucleiReference=nuclei_reference,
+            webMethod="POST",
+            webParameters="param=value",
+            webProtocol="HTTPS",
+            webRequest=f"{nuclei_reference['request']}",
+            webResponse=f"{nuclei_reference['response']}",
+            webSteps=f"1-{nuclei_reference['host']} \n\r2-bbbbbbbbbbbbbbbbbbbb \n\r3-cccccccccccccccccccc \n\r4-ddddddddddddddddddddd.",
+            webUrl=f"{nuclei_reference['host']}",
         )
 
-    def __report_598(self, nuclei_reference):
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(nuclei_reference)
+    def report_1048(self, nuclei_reference):
+        if self.is_english is True:
+            return NotificationReport(
+                projectId=self.project_id,
+                vulnerabilityTemplateId=776,
+                description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Permissions-Policy" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
+                evidenceArchives=self.__parse_evidences(
+                    [
+                        self.__mount_default_evidence(nuclei_reference),
+                    ]
+                ),
+                nucleiReference=nuclei_reference,
+            )
         return NotificationReport(
-            self.project_id, 598, description, evidenceArchives, nuclei_reference
+            projectId=self.project_id,
+            vulnerabilityTemplateId=1048,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Permissions-Policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                ]
+            ),
+            nucleiReference=nuclei_reference,
         )
 
-    def __report_599(self, nuclei_reference):
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "strict-transport-security" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(nuclei_reference)
+    def report_598(self, nuclei_reference):
+        if self.is_english is True:
+            return NotificationReport(
+                projectId=self.project_id,
+                vulnerabilityTemplateId=684,
+                description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Content-Security-Policy" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
+                evidenceArchives=self.__parse_evidences(
+                    [
+                        self.__mount_default_evidence(nuclei_reference),
+                    ]
+                ),
+                nucleiReference=nuclei_reference,
+            )
         return NotificationReport(
-            self.project_id, 599, description, evidenceArchives, nuclei_reference
+            projectId=self.project_id,
+            vulnerabilityTemplateId=598,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Content-Security-Policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                ]
+            ),
+            nucleiReference=nuclei_reference,
         )
 
-    def __report_596(self, nuclei_reference):
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "x-frame-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(nuclei_reference)
+    def report_599(self, nuclei_reference):
+        if self.is_english is True:
+            return NotificationReport(
+                projectId=self.project_id,
+                vulnerabilityTemplateId=685,
+                description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Strict-Transport-Security" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
+                evidenceArchives=self.__parse_evidences(
+                    [
+                        self.__mount_default_evidence(nuclei_reference),
+                    ]
+                ),
+                nucleiReference=nuclei_reference,
+            )
         return NotificationReport(
-            self.project_id, 596, description, evidenceArchives, nuclei_reference
+            projectId=self.project_id,
+            vulnerabilityTemplateId=599,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Strict-Transport-Security" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                ]
+            ),
+            nucleiReference=nuclei_reference,
         )
 
-    def __report_597(self, nuclei_reference):
-        description = f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "x-content-type-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta."""
-        evidenceArchives = self.__parse_evidences(
-            [
-                f""" 0: test """,
-                f""" 1: {nuclei_reference['host']} """,
-                f""" 2: {nuclei_reference['matcher-name']} """,
-            ],
-        )
+    def report_596(self, nuclei_reference):
+        if self.is_english is True:
+            return NotificationReport(
+                projectId=self.project_id,
+                vulnerabilityTemplateId=759,
+                description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "X-Frame-Options" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
+                evidenceArchives=self.__parse_evidences(
+                    [
+                        self.__mount_default_evidence(nuclei_reference),
+                    ]
+                ),
+                nucleiReference=nuclei_reference,
+            )
+
         return NotificationReport(
-            self.project_id, 597, description, evidenceArchives, nuclei_reference
+            projectId=self.project_id,
+            vulnerabilityTemplateId=596,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "X-Frame-Options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                ]
+            ),
+            nucleiReference=nuclei_reference,
+        )
+
+    def report_597(self, nuclei_reference):
+        if self.is_english is True:
+            return NotificationReport(
+                projectId=self.project_id,
+                vulnerabilityTemplateId=683,
+                description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "X-Content-Type-Options" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
+                evidenceArchives=self.__parse_evidences(
+                    [
+                        self.__mount_default_evidence(nuclei_reference),
+                    ]
+                ),
+                nucleiReference=nuclei_reference,
+            )
+        return NotificationReport(
+            projectId=self.project_id,
+            vulnerabilityTemplateId=597,
+            description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "x-content-type-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                ]
+            ),
+            nucleiReference=nuclei_reference,
         )
 
     def __setup_tmp_directory(self):
@@ -184,15 +312,15 @@ class ReportInterface:
         os.makedirs(self.__evidences_tmp_dir, exist_ok=True)
 
     def __generate_token_stamp(self):
-        bin_timestamp = str(datetime.now().timestamp()).encode(UTF8)
-        token = base64.b64encode(bin_timestamp).decode(UTF8)
+        token = datetime.now().timestamp()
+        token = base64encode(token)
         token = token.rstrip("=")
         return encode(token, "rot_13")
 
     def open_token_stamp(self, token):
         token = encode(token, "rot_13")
         token += "="
-        return base64.b64decode(token.encode(UTF8)).decode(UTF8)
+        return base64decode(token)
 
     def __close_reader(self, evidenceArchives):
         """Memory leak protection."""
@@ -209,7 +337,7 @@ class ReportInterface:
 
     def __mount_binary_evidence(self, evidence_data):
         token = self.__generate_token_stamp()
-        tmp_filepath = "{}/evidence-{}.txt".format(self.__evidences_tmp_dir, token)
+        tmp_filepath = f"""{self.__evidences_tmp_dir}/evidence-{get_random_string()}-{token}.txt""".strip()
         tmp_file = open(tmp_filepath, "w")
         created_evidences = []
         if evidence_data:
@@ -242,9 +370,9 @@ class ReportInterface:
                 return ref
 
     def __get_reference_report(self, nuclei_item):
-        ref_by_matcher_name = self.__get_reference_by_matcher_name(nuclei_item)
-        if ref_by_matcher_name:
-            return ref_by_matcher_name
+        reference = None
+        reference = self.__get_reference_by_matcher_name(nuclei_item)
+        return reference
 
     def __parse_reports(self, nuclei_scan_results):
         """Generate Conviso Platform reports by parsing nuclei results and crossing with preconfigured reports.
@@ -259,11 +387,11 @@ class ReportInterface:
         for nuclei_item in nuclei_scan_results:
             reference = self.__get_reference_report(nuclei_item)
             if bool(reference):
-                report = reference["generator"](nuclei_item)
-                logging.debug(
-                    f"""[DBG] Generated report: {report.gql_reference} - {report.vulnerabilityTemplateId} - {report.nucleiReference["host"]} - {report.nucleiReference["matcher-name"]}"""
-                )
+                report = reference.get("parser")(nuclei_item)
                 parsed_reports.append(report)
+                logging.debug(
+                    f"""[DBG] Generated report: {report.gqlReference} - {report.vulnerabilityTemplateId} - {report.nucleiReference["host"]} - {report.nucleiReference["matcher-name"]}"""
+                )
         return parsed_reports
 
     def create_reports(self, nuclei_scan_results):
@@ -273,4 +401,5 @@ class ReportInterface:
             list<NotificationReport>: see src/lib/ReportService.py for further details.
         """
         self.reports = self.__parse_reports(nuclei_scan_results)
+        print(f"[INF] Generated reports from Nuclei scan output: {len(self.reports)} ")
         return self.reports

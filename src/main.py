@@ -26,18 +26,8 @@ def main():
         integration_interface.nuclei_scan_results
     )
 
-    print(
-        "[INF] Generated reports from Nuclei scan output: {} ".format(
-            len(integration_interface.report_service.reports)
-        )
-    )
-
-    # integration_interface.gql_service.deploy_reports(
-    #     integration_interface.report_service.reports
-    # )
-
-    print(
-        f"""[INF] Done! Review your reports in \"{integration_interface.gql_service.project_url}\""""
+    integration_interface.gql_service.deploy_reports(
+        integration_interface.report_service.reports
     )
     pass
 

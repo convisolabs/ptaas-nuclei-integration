@@ -5,7 +5,7 @@
     <a href="/LICENSE.md">
       <img src="https://img.shields.io/badge/license-MIT-blue.svg">
     </a>
-    <a href="https://github.com/convisoappsec/ptaas-nuclei-integration/releases">
+    <a href="https://github.com/convisolabs/ptaas-nuclei-integration/releases">
       <img src="https://img.shields.io/badge/version-βeta-blue.svg">
     </a>
   </p>
@@ -27,7 +27,7 @@ You can find the documentation at [docs](https://github.com/convisolabs/ptaas-nu
 
 ### Contribution
 
-- Your contributions and suggestions are heartily ♥ welcome. [See here the contribution guidelines.](/.github/CONTRIBUTING.md) Please, report bugs via [issues page](https://github.com/convisoappsec/ptaas-nuclei-integration/issues) and for security issues, see here the [security policy.](/SECURITY.md)
+- Your contributions and suggestions are heartily ♥ welcome. [See here the contribution guidelines.](/.github/CONTRIBUTING.md) Please, report bugs via [issues page](https://github.com/convisolabs/ptaas-nuclei-integration/issues) and for security issues, see here the [security policy.](/SECURITY.md)
 
 ---
 

@@ -33,7 +33,7 @@ class IntegrationInterface:
         )
         self.__args = args
         self.nuclei_scan_results = self.__parse_nuclei_json(self.__args.nuclei_output)
-        self.report_service = ReportService.ReportInterface(self.__args.project_id)
+        self.report_service = ReportService.ReportInterface(self.__args.project_id, self.__args.is_english)
         self.gql_service = GQLService.GQLInterface(
             self.__args.api_key, self.__args.project_id, self.__args.api_environment
         )
