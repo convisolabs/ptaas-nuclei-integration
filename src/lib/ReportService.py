@@ -161,16 +161,11 @@ class ReportInterface:
 
     def report_web(self, nuclei_reference):
         return WebVulnerabilityReport(
-            projectId=self.project_id,
             vulnerabilityTemplateId=662,
             probability="low",
             impact="low",
             impactResume=f"""impact test in {nuclei_reference['host']} """,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
-                [self.__mount_default_evidence(nuclei_reference)]
-            ),
-            nucleiReference=nuclei_reference,
             webMethod="POST",
             webParameters="param=value",
             webProtocol="HTTPS",
@@ -178,6 +173,37 @@ class ReportInterface:
             webResponse=f"{nuclei_reference['response']}",
             webSteps=f"1-{nuclei_reference['host']} \n\r2-bbbbbbbbbbbbbbbbbbbb \n\r3-cccccccccccccccccccc \n\r4-ddddddddddddddddddddd.",
             webUrl=f"{nuclei_reference['host']}",
+            projectId=self.project_id,
+            nucleiReference=nuclei_reference,
+            evidenceArchives=self.__parse_evidences(
+                [self.__mount_default_evidence(nuclei_reference)]
+            ),
+        )
+
+    def report_clickjacking(self, nuclei_reference):
+        if self.is_english is True:
+            return
+        return WebVulnerabilityReport(
+            vulnerabilityTemplateId=761,
+            probability="low",
+            impact="low",
+            impactResume=f"""A página pode ser incluída em um frame de outro domínio, permitindo que usuários sejam vítimas de ataques de Clickjacking efetuando operações críticas sem seu conhecimento.""",
+            description=f"""Durante o teste foi descoberto que a aplicação não utiliza o header X-FRAME-OPTIONS sendo possível fazer sobreposição de conteúdo. """,
+            webMethod=f"{nuclei_reference['method']}",
+            webParameters="",
+            webProtocol=f"{nuclei_reference['protocol']}",
+            webRequest=f"{nuclei_reference['request']}",
+            webResponse=f"{nuclei_reference['response']}",
+            webSteps=f"1-{nuclei_reference['host']} \n\r2-bbbbbbbbbbbbbbbbbbbb \n\r3-cccccccccccccccccccc \n\r4-ddddddddddddddddddddd.",
+            webUrl=f"{nuclei_reference['host']}",
+            projectId=self.project_id,
+            nucleiReference=nuclei_reference,
+            evidenceArchives=self.__parse_evidences(
+                [
+                    self.__mount_default_evidence(nuclei_reference),
+                    f"""<!DOCTYPE html> <html> <head> </head> <body>     <p style="font-size: 28px; color: red;">Clickjacking PoC:</p>     <iframe src="{nuclei_reference['host']}" width="100%" height="850"> </body> </html>"""
+                ]
+            ),
         )
 
     def report_1048(self, nuclei_reference):
