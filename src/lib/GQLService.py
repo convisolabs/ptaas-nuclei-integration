@@ -9,6 +9,7 @@
 
 
 import logging
+from urllib.parse import quote as encode_url
 
 from dotenv import dotenv_values
 from gql import Client, gql
@@ -49,7 +50,7 @@ class GQLInterface:
                 if found_current_project:
                     base_url = self.gql_client.transport.url.replace(
                         "/graphql", "")
-                    url = f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}"""
+                    url = encode_url(f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}""")
                     logging.debug(
                         f"[DBG] Connection established with project: {url}")
                     return url
