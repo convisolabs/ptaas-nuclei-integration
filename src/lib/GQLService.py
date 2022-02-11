@@ -9,6 +9,7 @@
 
 
 import logging
+from sys import exit
 from urllib.parse import quote as encode_url
 
 from dotenv import dotenv_values
@@ -25,9 +26,9 @@ class GQLInterface:
     def __init__(self, api_key, project_id, environment="production"):
         self.gql_queries_map = {
             "allocatedProjects": """ query allocatedProjects { allocatedProjects(page: 0) { collection { id companyId pid} } } """,
-            "createNotification": """ mutation createNotification( $projectId: Int! $vulnerabilityTemplateId: Int! $description: String! $evidenceArchives: [Upload!]! ) { createNotification( input: { clientMutationId: {clientMutationId} projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId description: $description evidenceArchives: $evidenceArchives } ) { clientMutationId errors notification { description } } } """.format(clientMutationId=CLIENT_MUTATION_ID),
-            "createWebVulnerability": """ mutation createWebVulnerability( $projectId: Int! $vulnerabilityTemplateId: Int! $impact: String! $probability: String! $description: String! $impactResume: String! $webProtocol: String! $webMethod: String! $webUrl: String! $webParameters: String! $webSteps: String! $webRequest: String! $webResponse: String! $evidenceArchives: [Upload!]! ) { createWebVulnerability( input: { clientMutationId: {clientMutationId} projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId impact: $impact probability: $probability description: $description impactResume: $impactResume webProtocol: $webProtocol webMethod: $webMethod webUrl: $webUrl webParameters: $webParameters webSteps: $webSteps webRequest: $webRequest webResponse: $webResponse evidenceArchives: $evidenceArchives invaded: false } ) { clientMutationId errors vulnerability { id vid title } } } """.format(clientMutationId=CLIENT_MUTATION_ID),
-        }
+            "createNotification": """mutation createNotification( $projectId: Int! $vulnerabilityTemplateId: Int! $description: String! $evidenceArchives: [Upload!]! ) { createNotification( input: { projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId description: $description evidenceArchives: $evidenceArchives } ) { clientMutationId errors notification { description } } }""",
+            "createWebVulnerability": """mutation createWebVulnerability( $projectId: Int! $vulnerabilityTemplateId: Int! $impact: String! $probability: String! $description: String! $impactResume: String! $webProtocol: String! $webMethod: String! $webUrl: String! $webParameters: String! $webSteps: String! $webRequest: String! $webResponse: String! $evidenceArchives: [Upload!]! ) { createWebVulnerability( input: { projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId impact: $impact probability: $probability description: $description impactResume: $impactResume webProtocol: $webProtocol webMethod: $webMethod webUrl: $webUrl webParameters: $webParameters webSteps: $webSteps webRequest: $webRequest webResponse: $webResponse evidenceArchives: $evidenceArchives invaded: false } ) { clientMutationId errors vulnerability { id vid title } } }""",
+         }
         self.api_key = api_key
         self.project_id = project_id
         self.environment = environment
@@ -58,12 +59,14 @@ class GQLInterface:
             else:
                 msg = f"[ERR] Project '{self.project_id}' not found."
                 logging.error(msg)
-                raise msg
+                print(msg)
+                exit() 
 
         except BaseException as err:
             msg = f"[ERR] Something wrong in #get_project_url: {err}"
             logging.error(msg)
-            raise msg
+            print(msg)
+            exit() 
 
     def __get_graphql_endpoint(self):
         if self.environment == "homologation":

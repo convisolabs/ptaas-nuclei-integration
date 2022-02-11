@@ -26,9 +26,9 @@ def main():
         integration_interface.nuclei_scan_results
     )
 
-    integration_interface.gql_service.deploy_reports(
-        integration_interface.report_service.reports
-    )
+    # integration_interface.gql_service.deploy_reports(
+    #     integration_interface.report_service.reports
+    # )
     pass
 
 
