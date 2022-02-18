@@ -162,7 +162,7 @@ class OtherVulnerabilityReport:
         protocol,
         steps,
         vector,
-        nucleiReference,
+        nucleiReference=None,
         invaded=False,
         invadedEnvironmentDescription="",
     ):
@@ -188,7 +188,7 @@ class ReportInterface:
     """Handler to parsing and creating Conviso Platform reports."""
 
     def __init__(self, project_id, is_english):
-        self.__evidences_tmp_dir = "./tmp"
+        self.evidences_tmp_dir = "./tmp"
         self.project_id = project_id
         self.is_english = is_english
         self.reports = []
@@ -451,11 +451,11 @@ class ReportInterface:
                 )
         return parsed_reports
 
-    def create_reports(self, nuclei_scan_results):
+    def create_reports(self, nuclei_scan_results = []):
         """Consume the nuclei results and create a report for each one that exists preconfigured.
 
         Returns:
-            list<NotificationReport>: see src/lib/ReportService.py for further details.
+            list<NotificationReport|WebVulnerabilityReport|OtherVulnerabilityReport>: see src/lib/ReportService.py for further details.
         """
         self.reports = self.parse_reports(nuclei_scan_results)
         print(f"[INF] Generated reports from Nuclei scan output: {len(self.reports)} ")

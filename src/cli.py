@@ -9,4 +9,10 @@
 
 """ Interface to programmatic automate your reports with this tool. """
 
-from lib import ArgumentParser, ConvisoNucleiIntegration
+from collections import OrderedDict
+from lib import ConvisoNucleiIntegration
+
+integration_interface = ConvisoNucleiIntegration.IntegrationInterface(OrderedDict({
+  "project_id": "<CHANGE>",
+  "api_key": "<CHANGE>",
+}))

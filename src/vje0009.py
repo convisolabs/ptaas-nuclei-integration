@@ -1,9 +1,17 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
+from collections import OrderedDict
+
 from lib import ConvisoNucleiIntegration
 
 
+integration_interface = ConvisoNucleiIntegration.IntegrationInterface(OrderedDict({
+  "project_id": "10319",
+  "api_key": "<CHANGE>"
+}))
+
+print("[+] Generating service exposure reports...")
 
 service_exposition_items = [ 
   {
@@ -146,6 +154,25 @@ service_exposition_items = [
   }
 ]
 
+reports = []
 for item in service_exposition_items:
-  ConvisoNucleiIntegration.ReportService.NotificationReport
+  report = ConvisoNucleiIntegration.ReportService.OtherVulnerabilityReport(
+    projectId=integration_interface.report_service.project_id,
+    vulnerabilityTemplateId=f"628",
+    evidenceArchives=integration_interface.report_service.parse_evidences([ f"""{item}""" ]),
+    probability=f"low",
+    impact=f"low",
+    impactResume=f"Um usuário malicioso pode usar o conhecimento sobre o serviço {item.get('service')} para explorar o sistema.",
+    description=f"Interagindo com a aplicação {item.get('ip')}",
+    host=f"{item.get('ip')}",
+    protocol=f"{item.get('protocol')}",
+    steps=f"1- Acessar o serviço {item.get('service')} através do protocolo {item.get('protocol')} na porta {item.get('port')}\n2- Observar a resposta.",
+    vector=f"Conexão ao dispositivo {item.get('ip')} através do protocolo {item.get('protocol')}",
+  )
+  reports.append(report)
   pass
+
+print(
+  len(reports),
+  reports
+  )
