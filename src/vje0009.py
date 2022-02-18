@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-import cli
+from lib import ConvisoNucleiIntegration
+
+
 
 service_exposition_items = [ 
   {
@@ -144,3 +146,6 @@ service_exposition_items = [
   }
 ]
 
+for item in service_exposition_items:
+  ConvisoNucleiIntegration.ReportService.NotificationReport
+  pass

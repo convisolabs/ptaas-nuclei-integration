@@ -126,6 +126,63 @@ class WebVulnerabilityReport:
         self.invaded = invaded
         self.invadedEnvironmentDescription = invadedEnvironmentDescription
 
+class OtherVulnerabilityReport:
+    """Handler to manipulate Conviso Vulnerability Report. Further information: https://docs.convisoappsec.com/api/graphql/documentation/inputs/create-web-vulnerability-input/
+
+    Properties:
+        clientMutationId ("ptani-78f6a7b4-154e-5e5a-b7cc-079ce31acd86"): Used to identify the requests done from this tool to Conviso GQL API.
+        projectId (int):                          Conviso Project ID.
+        vulnerabilityTemplateId (int):            Conviso Template ID
+        evidenceArchives ([_io.TextIOWrapper]):   List with binary evidences.
+        probability (["high", "medium", "low"]):  Vulnerability probability.
+        impact (["high", "medium", "low"]):       Impact of the vulnerability.
+        impactResume (str):                       Description of the impact.
+        description (str):                        Description of the vulnerability.
+        invaded (bool[default=False]):            True if the environment was compromised.
+        invadedEnvironmentDescription (str):      Required if invaded is True.
+        host (str):                               Host of the vulnerability.
+        protocol (str):                           Protocol used in the web request.
+        steps (str):                              Steps to reproduce the vulnerability.                                
+        vector (str):                             Vector used in the web request.
+
+    Returns:
+        OtherVulnerabilityReport:
+    """
+
+    def __init__(
+        self,
+        projectId,
+        vulnerabilityTemplateId,
+        evidenceArchives,
+        probability,
+        impact,
+        impactResume,
+        description,
+        host,
+        protocol,
+        steps,
+        vector,
+        nucleiReference,
+        invaded=False,
+        invadedEnvironmentDescription="",
+    ):
+        self.gqlReference = "createWebVulnerability"
+        self.clientMutationId = "ptani-78f6a7b4-154e-5e5a-b7cc-079ce31acd86"
+        self.projectId = int(projectId)
+        self.vulnerabilityTemplateId = int(vulnerabilityTemplateId)
+        self.probability = probability
+        self.impact = impact
+        self.impactResume = impactResume
+        self.description = description
+        self.evidenceArchives = evidenceArchives
+        self.nucleiReference = nucleiReference
+        self.invaded = invaded
+        self.invadedEnvironmentDescription = invadedEnvironmentDescription
+        self.host = host
+        self.protocol = protocol
+        self.steps = steps
+        self.vector = vector
+
 
 class ReportInterface:
     """Handler to parsing and creating Conviso Platform reports."""
