@@ -31,14 +31,14 @@ class IntegrationInterface:
             level=args.log_level,
             format="%(created)s:%(levelname)s:%(module)s:%(pathname)s:%(lineno)s:%(message)s",
         )
-        self.__args = args
-        self.nuclei_scan_results = self.__parse_nuclei_json(self.__args.nuclei_output)
-        self.report_service = ReportService.ReportInterface(self.__args.project_id, self.__args.is_english)
+        self.args = args
+        self.nuclei_scan_results = self.parse_nuclei_json(self.args.nuclei_output)
+        self.report_service = ReportService.ReportInterface(self.args.project_id, self.args.is_english)
         self.gql_service = GQLService.GQLInterface(
-            self.__args.api_key, self.__args.project_id, self.__args.api_environment
+            self.args.api_key, self.args.project_id, self.args.api_environment
         )
 
-    def __parse_nuclei_json(self, file):
+    def parse_nuclei_json(self, file):
         """Make nuclei output compatible with the ISO accepted in JSON by python.
 
         Args:

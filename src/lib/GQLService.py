@@ -34,7 +34,7 @@ class GQLInterface:
         self.environment = environment
         self.gql_client = Client(
             transport=AIOHTTPTransport(
-                url=self.__get_graphql_endpoint(),
+                url=self.get_graphql_endpoint(),
                 headers={"x-api-key": self.api_key},
             )
         )
@@ -68,7 +68,7 @@ class GQLInterface:
             print(msg)
             exit() 
 
-    def __get_graphql_endpoint(self):
+    def get_graphql_endpoint(self):
         if self.environment == "homologation":
             return "https://homologa.conviso.com.br/graphql"
 

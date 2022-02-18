@@ -35,12 +35,12 @@ class NotificationReport:
     """Handler to manipulate Conviso Notification Report.  Further information: https://docs.convisoappsec.com/api/graphql/documentation/mutations/create-notification
 
     Properties:
-        projectId (int): Conviso Project ID.
         vulnerabilityTemplateId (int): Conviso Template ID
-        description (str): Report description.
-        evidenceArchives (list<_io.TextIOWrapper>): List with binary evidences.
-        nucleiReference (dict): Nuclei test reference.
+        projectId (int): Conviso Project ID.
         gqlReference (string): Its a constant. Reference identifier for which to see in GQL.
+        evidenceArchives (list<_io.TextIOWrapper>): List with binary evidences.
+        description (str): Report description.
+        [nucleiReference] (dict): Nuclei test reference.
     """
 
     def __init__(
@@ -57,7 +57,7 @@ class NotificationReport:
         self.vulnerabilityTemplateId = int(vulnerabilityTemplateId)
         self.description = description
         self.evidenceArchives = evidenceArchives  # todo: create binary evidence
-        self.nucleiReference = nucleiReference
+        self.nucleiReference = nucleiReference if nucleiReference else None
 
 
 class WebVulnerabilityReport:
@@ -157,7 +157,7 @@ class ReportInterface:
                 "parser": lambda nuclei_reference: self.report_1048(nuclei_reference),
             },
         ]
-        self.__setup_tmp_directory()
+        self.setup_tmp_directory()
 
     def report_web(self, nuclei_reference):
         return WebVulnerabilityReport(
@@ -167,8 +167,8 @@ class ReportInterface:
             impact="low",
             impactResume=f"""impact test in {nuclei_reference['host']} """,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "content-security-policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
-                [self.__mount_default_evidence(nuclei_reference)]
+            evidenceArchives=self.parse_evidences(
+                [self.mount_default_evidence(nuclei_reference)]
             ),
             nucleiReference=nuclei_reference,
             webMethod="POST",
@@ -186,9 +186,9 @@ class ReportInterface:
                 projectId=self.project_id,
                 vulnerabilityTemplateId=776,
                 description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Permissions-Policy" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
-                evidenceArchives=self.__parse_evidences(
+                evidenceArchives=self.parse_evidences(
                     [
-                        self.__mount_default_evidence(nuclei_reference),
+                        self.mount_default_evidence(nuclei_reference),
                     ]
                 ),
                 nucleiReference=nuclei_reference,
@@ -197,9 +197,9 @@ class ReportInterface:
             projectId=self.project_id,
             vulnerabilityTemplateId=1048,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Permissions-Policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
+            evidenceArchives=self.parse_evidences(
                 [
-                    self.__mount_default_evidence(nuclei_reference),
+                    self.mount_default_evidence(nuclei_reference),
                 ]
             ),
             nucleiReference=nuclei_reference,
@@ -211,9 +211,9 @@ class ReportInterface:
                 projectId=self.project_id,
                 vulnerabilityTemplateId=684,
                 description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Content-Security-Policy" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
-                evidenceArchives=self.__parse_evidences(
+                evidenceArchives=self.parse_evidences(
                     [
-                        self.__mount_default_evidence(nuclei_reference),
+                        self.mount_default_evidence(nuclei_reference),
                     ]
                 ),
                 nucleiReference=nuclei_reference,
@@ -222,9 +222,9 @@ class ReportInterface:
             projectId=self.project_id,
             vulnerabilityTemplateId=598,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Content-Security-Policy" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
+            evidenceArchives=self.parse_evidences(
                 [
-                    self.__mount_default_evidence(nuclei_reference),
+                    self.mount_default_evidence(nuclei_reference),
                 ]
             ),
             nucleiReference=nuclei_reference,
@@ -236,9 +236,9 @@ class ReportInterface:
                 projectId=self.project_id,
                 vulnerabilityTemplateId=685,
                 description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "Strict-Transport-Security" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
-                evidenceArchives=self.__parse_evidences(
+                evidenceArchives=self.parse_evidences(
                     [
-                        self.__mount_default_evidence(nuclei_reference),
+                        self.mount_default_evidence(nuclei_reference),
                     ]
                 ),
                 nucleiReference=nuclei_reference,
@@ -247,9 +247,9 @@ class ReportInterface:
             projectId=self.project_id,
             vulnerabilityTemplateId=599,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "Strict-Transport-Security" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
+            evidenceArchives=self.parse_evidences(
                 [
-                    self.__mount_default_evidence(nuclei_reference),
+                    self.mount_default_evidence(nuclei_reference),
                 ]
             ),
             nucleiReference=nuclei_reference,
@@ -261,9 +261,9 @@ class ReportInterface:
                 projectId=self.project_id,
                 vulnerabilityTemplateId=759,
                 description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "X-Frame-Options" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
-                evidenceArchives=self.__parse_evidences(
+                evidenceArchives=self.parse_evidences(
                     [
-                        self.__mount_default_evidence(nuclei_reference),
+                        self.mount_default_evidence(nuclei_reference),
                     ]
                 ),
                 nucleiReference=nuclei_reference,
@@ -273,9 +273,9 @@ class ReportInterface:
             projectId=self.project_id,
             vulnerabilityTemplateId=596,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "X-Frame-Options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
+            evidenceArchives=self.parse_evidences(
                 [
-                    self.__mount_default_evidence(nuclei_reference),
+                    self.mount_default_evidence(nuclei_reference),
                 ]
             ),
             nucleiReference=nuclei_reference,
@@ -287,9 +287,9 @@ class ReportInterface:
                 projectId=self.project_id,
                 vulnerabilityTemplateId=683,
                 description=f"""The application <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> does not have the response header "X-Content-Type-Options" as shown in evidence. This can be validated by making a request to the application quoted above and observing its response.""",
-                evidenceArchives=self.__parse_evidences(
+                evidenceArchives=self.parse_evidences(
                     [
-                        self.__mount_default_evidence(nuclei_reference),
+                        self.mount_default_evidence(nuclei_reference),
                     ]
                 ),
                 nucleiReference=nuclei_reference,
@@ -298,20 +298,20 @@ class ReportInterface:
             projectId=self.project_id,
             vulnerabilityTemplateId=597,
             description=f"""A aplicação <a href="{nuclei_reference['host']}">{nuclei_reference['host']}</a> não possui o cabeçalho de resposta "x-content-type-options" conforme demonstrado na evidência. Isso pode ser validado fazendo uma requisição à aplicação citada acima e observando sua resposta.""",
-            evidenceArchives=self.__parse_evidences(
+            evidenceArchives=self.parse_evidences(
                 [
-                    self.__mount_default_evidence(nuclei_reference),
+                    self.mount_default_evidence(nuclei_reference),
                 ]
             ),
             nucleiReference=nuclei_reference,
         )
 
-    def __setup_tmp_directory(self):
-        if os.path.isdir(self.__evidences_tmp_dir):
-            rmtree(self.__evidences_tmp_dir)
-        os.makedirs(self.__evidences_tmp_dir, exist_ok=True)
+    def setup_tmp_directory(self):
+        if os.path.isdir(self.evidences_tmp_dir):
+            rmtree(self.evidences_tmp_dir)
+        os.makedirs(self.evidences_tmp_dir, exist_ok=True)
 
-    def __generate_token_stamp(self):
+    def generate_token_stamp(self):
         token = datetime.now().timestamp()
         token = base64encode(token)
         token = token.rstrip("=")
@@ -327,7 +327,7 @@ class ReportInterface:
         for evidence in evidenceArchives:
             evidence.close()
 
-    def __mount_default_evidence(self, nuclei_reference):
+    def mount_default_evidence(self, nuclei_reference):
         return f"""
         \r# REQUEST
         \r{nuclei_reference['request']} 
@@ -335,9 +335,9 @@ class ReportInterface:
         \r{nuclei_reference['response']}
         """
 
-    def __mount_binary_evidence(self, evidence_data):
-        token = self.__generate_token_stamp()
-        tmp_filepath = f"""{self.__evidences_tmp_dir}/evidence-{get_random_string()}-{token}.txt""".strip()
+    def mount_binary_evidence(self, evidence_data):
+        token = self.generate_token_stamp()
+        tmp_filepath = f"""{self.evidences_tmp_dir}/evidence-{get_random_string()}-{token}.txt""".strip()
         tmp_file = open(tmp_filepath, "w")
         created_evidences = []
         if evidence_data:
@@ -346,7 +346,7 @@ class ReportInterface:
         tmp_file.close()
         return open(tmp_filepath, "rb")
 
-    def __parse_evidences(self, evidences=list):
+    def parse_evidences(self, evidences=list):
         """Used to write the evidences in files on the disk to store it as binary to GQL API
 
         Args:
@@ -360,21 +360,21 @@ class ReportInterface:
 
         parsed_evidences = []
         for evidences in evidences:
-            mounted_evidence = self.__mount_binary_evidence(evidences)
+            mounted_evidence = self.mount_binary_evidence(evidences)
             parsed_evidences.append(mounted_evidence)
         return parsed_evidences
 
-    def __get_reference_by_matcher_name(self, nuclei_item):
+    def get_reference_by_matcher_name(self, nuclei_item):
         for ref in self.reference_reports:
             if ref["matcher-name"] == nuclei_item["matcher-name"]:
                 return ref
 
-    def __get_reference_report(self, nuclei_item):
+    def get_reference_report(self, nuclei_item):
         reference = None
-        reference = self.__get_reference_by_matcher_name(nuclei_item)
+        reference = self.get_reference_by_matcher_name(nuclei_item)
         return reference
 
-    def __parse_reports(self, nuclei_scan_results):
+    def parse_reports(self, nuclei_scan_results):
         """Generate Conviso Platform reports by parsing nuclei results and crossing with preconfigured reports.
 
         Args:
@@ -385,7 +385,7 @@ class ReportInterface:
         """
         parsed_reports = []
         for nuclei_item in nuclei_scan_results:
-            reference = self.__get_reference_report(nuclei_item)
+            reference = self.get_reference_report(nuclei_item)
             if bool(reference):
                 report = reference.get("parser")(nuclei_item)
                 parsed_reports.append(report)
@@ -400,6 +400,6 @@ class ReportInterface:
         Returns:
             list<NotificationReport>: see src/lib/ReportService.py for further details.
         """
-        self.reports = self.__parse_reports(nuclei_scan_results)
+        self.reports = self.parse_reports(nuclei_scan_results)
         print(f"[INF] Generated reports from Nuclei scan output: {len(self.reports)} ")
         return self.reports
