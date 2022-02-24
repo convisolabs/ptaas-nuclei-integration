@@ -451,7 +451,7 @@ class ReportInterface:
                 )
         return parsed_reports
 
-    def create_reports(self, nuclei_scan_results = []):
+    def create_nuclei_reports(self, nuclei_scan_results = []):
         """Consume the nuclei results and create a report for each one that exists preconfigured.
 
         Returns:

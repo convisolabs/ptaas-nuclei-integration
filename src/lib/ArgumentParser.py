@@ -63,7 +63,6 @@ def get_arguments():
         help="Nuclei test result file path. Input from pipe/STDIN use \"-\". i.e., --nuclei-output -",
         type=argparse.FileType("r"),
         default=(None if sys.stdin.isatty() else sys.stdin),
-        required=True,
     )
     parser.add_argument(
         "-eng",
@@ -88,5 +87,11 @@ def get_arguments():
         type=str,
         choices=["DEBUG", "INFO", "WARNING", "ERROR"],
         default="DEBUG",
+    )
+    parser.add_argument(
+        "-S",
+        "--script",
+        help="Script path to be executed. Example: <URL>",
+        type=str,
     )
     return parser.parse_args()

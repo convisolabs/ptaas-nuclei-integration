@@ -33,6 +33,7 @@ class IntegrationInterface:
             format="%(created)s:%(levelname)s:%(module)s:%(pathname)s:%(lineno)s:%(message)s",
         )
         self.args = args
+        # if self.args.is_script
         self.nuclei_scan_results = self.parse_nuclei_json(self.args.get("nuclei_output")) 
         self.report_service = ReportService.ReportInterface(self.args.get("project_id"), self.args.get("is_english"))
         self.gql_service = GQLService.GQLInterface(
@@ -50,7 +51,7 @@ class IntegrationInterface:
         """
         if not file:
             print("[!] Nuclei test output was not found. Check usage in --help.")
-            return None
+            sys.exit(1)
         file_content = file.read().strip()
         file_content = file_content.replace("}\n{", "},\n{")
         return json.loads("[" + file_content + "]")

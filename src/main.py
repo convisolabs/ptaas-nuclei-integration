@@ -18,11 +18,11 @@ from lib import ArgumentParser, ConvisoNucleiIntegration
 
 
 def main():
-    __ARGUMENTS__ = ArgumentParser.get_arguments()
+    integration_interface = ConvisoNucleiIntegration.IntegrationInterface(
+        ArgumentParser.get_arguments()
+    )
 
-    integration_interface = ConvisoNucleiIntegration.IntegrationInterface(__ARGUMENTS__)
-
-    integration_interface.report_service.create_reports(
+    integration_interface.report_service.create_nuclei_reports(
         integration_interface.nuclei_scan_results
     )
 

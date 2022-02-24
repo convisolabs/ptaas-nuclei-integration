@@ -5,14 +5,6 @@ from collections import OrderedDict
 
 from lib import ConvisoNucleiIntegration
 
-
-integration_interface = ConvisoNucleiIntegration.IntegrationInterface(OrderedDict({
-  "project_id": "10319",
-  "api_key": "<CHANGE>"
-}))
-
-print("[+] Generating service exposure reports...")
-
 service_exposition_items = [ 
   {
     "ip": "10.50.20.105",
@@ -154,25 +146,46 @@ service_exposition_items = [
   }
 ]
 
-reports = []
-for item in service_exposition_items:
-  report = ConvisoNucleiIntegration.ReportService.OtherVulnerabilityReport(
-    projectId=integration_interface.report_service.project_id,
-    vulnerabilityTemplateId=f"628",
-    evidenceArchives=integration_interface.report_service.parse_evidences([ f"""{item}""" ]),
-    probability=f"low",
-    impact=f"low",
-    impactResume=f"Um usuário malicioso pode usar o conhecimento sobre o serviço {item.get('service')} para explorar o sistema.",
-    description=f"Interagindo com a aplicação {item.get('ip')}",
-    host=f"{item.get('ip')}",
-    protocol=f"{item.get('protocol')}",
-    steps=f"1- Acessar o serviço {item.get('service')} através do protocolo {item.get('protocol')} na porta {item.get('port')}\n2- Observar a resposta.",
-    vector=f"Conexão ao dispositivo {item.get('ip')} através do protocolo {item.get('protocol')}",
-  )
-  reports.append(report)
-  pass
+def parse_nmap_scriptname(string):
+  strings = string.split(".")
+  if not len(strings)>2:
+    return None
+  return strings[2]
 
-print(
-  len(reports),
-  reports
-  )
+def get_reports_1(integration_interface):
+  reports = []
+  for item in service_exposition_items:
+    report = ConvisoNucleiIntegration.ReportService.OtherVulnerabilityReport(
+      projectId=integration_interface.report_service.project_id,
+      vulnerabilityTemplateId=f"628",
+      evidenceArchives=integration_interface.report_service.parse_evidences([ f"""{item}""" ]),
+      probability=f"low",
+      impact=f"low",
+      impactResume=f"Um usuário malicioso pode usar o conhecimento sobre o serviço {item.get('service')} para explorar o sistema.",
+      description=f"Interagindo com a aplicação {item.get('ip')}",
+      host=f"{item.get('ip')}",
+      protocol=f"{item.get('protocol')}",
+      steps=f"1- Realizar conexão com o serviço no endereço: {item.get('protocol')}://{item.get('service')}:{item.get('port')}\n2- Observar o banner da resposta.",
+      vector=f"Conexão ao dispositivo {item.get('ip')} através do protocolo {item.get('protocol')}",
+    )
+    reports.append(report)
+  return reports
+
+
+if __name__ == "__main__":
+  print("[+] Programmatic report generation...")
+
+  integration_interface = ConvisoNucleiIntegration.IntegrationInterface(OrderedDict({
+    "project_id": "10319",
+    "api_key": "Np59TzYlk6qy3y0Gl_UGkEg5Q9Nc7YZAjUIXyOKqSiE"
+  }))
+
+  reports_1 = get_reports_1(integration_interface)
+
+  if len(reports_1):
+    print(f"[+] Deploying {len(reports_1)} reports...")
+    integration_interface.gql_service.deploy_reports(reports_1)
+  else:
+    print("[-] Something wrong on deploy.")    
+    print(f"[+] Generated {len(reports_1)} reports...")
+    
