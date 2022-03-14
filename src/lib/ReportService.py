@@ -187,10 +187,11 @@ class OtherVulnerabilityReport:
 class ReportInterface:
     """Handler to parsing and creating Conviso Platform reports."""
 
-    def __init__(self, project_id, is_english):
-        self.evidences_tmp_dir = "./tmp"
+    def __init__(self, project_id, is_english = False):
         self.project_id = project_id
         self.is_english = is_english
+        
+        self.evidences_tmp_dir = "./tmp"
         self.reports = []
         self.reference_reports = [
             {

@@ -63,6 +63,7 @@ def get_arguments():
         help="Nuclei test result file path. Input from pipe/STDIN use \"-\". i.e., --nuclei-output -",
         type=argparse.FileType("r"),
         default=(None if sys.stdin.isatty() else sys.stdin),
+        required=False
     )
     parser.add_argument(
         "-eng",

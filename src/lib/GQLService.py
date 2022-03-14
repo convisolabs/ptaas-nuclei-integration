@@ -24,14 +24,15 @@ class GQLInterface:
     """Handler to interate with Conviso GraphQL API"""
 
     def __init__(self, api_key, project_id, environment="production"):
+        self.api_key = api_key
+        self.project_id = project_id
+        self.environment = environment
+        
         self.gql_queries_map = {
             "allocatedProjects": """ query allocatedProjects { allocatedProjects(page: 0) { collection { id companyId pid} } } """,
             "createNotification": """mutation createNotification( $projectId: Int! $vulnerabilityTemplateId: Int! $description: String! $evidenceArchives: [Upload!]! ) { createNotification( input: { projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId description: $description evidenceArchives: $evidenceArchives } ) { clientMutationId errors notification { description } } }""",
             "createWebVulnerability": """mutation createWebVulnerability( $projectId: Int! $vulnerabilityTemplateId: Int! $impact: String! $probability: String! $description: String! $impactResume: String! $webProtocol: String! $webMethod: String! $webUrl: String! $webParameters: String! $webSteps: String! $webRequest: String! $webResponse: String! $evidenceArchives: [Upload!]! ) { createWebVulnerability( input: { projectId: $projectId vulnerabilityTemplateId: $vulnerabilityTemplateId impact: $impact probability: $probability description: $description impactResume: $impactResume webProtocol: $webProtocol webMethod: $webMethod webUrl: $webUrl webParameters: $webParameters webSteps: $webSteps webRequest: $webRequest webResponse: $webResponse evidenceArchives: $evidenceArchives invaded: false } ) { clientMutationId errors vulnerability { id vid title } } }""",
          }
-        self.api_key = api_key
-        self.project_id = project_id
-        self.environment = environment
         self.gql_client = Client(
             transport=AIOHTTPTransport(
                 url=self.get_graphql_endpoint(),
@@ -50,9 +51,8 @@ class GQLInterface:
             for project in projects:
                 found_current_project = self.project_id == project.get("id")
                 if found_current_project:
-                    base_url = self.gql_client.transport.url.replace(
-                        "/graphql", "")
-                    url = encode_url(f"""{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?q[project_id_eq]={project.get("id")}""")
+                    base_url = self.gql_client.transport.url.replace( "/graphql", "")
+                    url = f"{base_url}/scopes/{project.get('companyId')}/vulnerabilities_dashboard?" + encode_url( f"""q[project_id_eq]={project.get("id")}""" )
                     logging.debug(
                         f"[DBG] Connection established with project: {url}")
                     return url
